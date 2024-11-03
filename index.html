@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
     <h1>Expense Tracker</h1>
@@ -33,5 +34,14 @@
         <h2>Transactions</h2>
         <div id="transactions"></div>
     </section>
+
+    <!--Filter transactions-->
+    <section>
+        <h3>Filter Transactions</h3>
+        <input type="number" id="min-filter" placeholder="Min Amount">
+        <input type="number" id="max-filter" placeholder="Max Amount">
+        <button id="filter-btn">Filter</button>
+    </section>
+</div>
 </body>
 </html>
