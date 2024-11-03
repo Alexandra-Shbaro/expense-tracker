@@ -6,29 +6,32 @@
     <title>Expense Tracker</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Expense Tracker</h1>
-        <form id="transaction-form">
-            <input type="text" id="description" placeholder="Description" required>
+    <h1>Expense Tracker</h1>
+    
+    <!-- Form to add transaction -->
+    <section id="transaction-form">
+        <h2>Add Transaction</h2>
+        <form id="form">
             <input type="number" id="amount" placeholder="Amount" required>
             <select id="type">
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
             </select>
             <input type="date" id="date" required>
+            <input type="text" id="notes" placeholder="Notes">
             <button type="submit">Add Transaction</button>
         </form>
-        <h2>Total Budget: <span id="total-budget">0</span></h2>
-        <div>
-            <h3>Transactions</h3>
-            <ul id="transaction-list"></ul>
-        </div>
-        <div>
-            <h3>Filter Transactions</h3>
-            <input type="number" id="min-filter" placeholder="Min Amount">
-            <input type="number" id="max-filter" placeholder="Max Amount">
-            <button id="filter-btn">Filter</button>
-        </div>
-    </div>
+    </section>
+
+    <!-- Display Total Budget -->
+    <section id="budget-display">
+        <h2>Total Budget: <span id="total-budget">$0</span></h2>
+    </section>
+
+    <!-- List of transactions -->
+    <section id="transaction-list">
+        <h2>Transactions</h2>
+        <div id="transactions"></div>
+    </section>
 </body>
 </html>
