@@ -1,6 +1,108 @@
+// Fetching containers
 const form = document.getElementById("form");
 const transactionsContainer = document.getElementById("transactions");
 const totalBudget = document.getElementById("total-budget");
+
+
+// Defining Filters
+var keyword = ""
+var date = null
+var min_amount = null
+var max_amount = null
+var trans_type = "all"
+
+
+// Defining listeners for filters
+
+// Keyword filter
+document.getElementById("keyword-filter").addEventListener("input", function (event) {
+    keyword = event.target.value;
+});
+
+// Date filter
+document.getElementById("date-filter").addEventListener("change", function (event) {
+    date = event.target.value;
+});
+
+// Min amount filter
+document.getElementById("min-filter").addEventListener("input", function (event) {
+    min_amount = event.target.value ? parseFloat(event.target.value) : null;
+});
+
+// Max amount filter
+document.getElementById("max-filter").addEventListener("input", function (event) {
+    max_amount = event.target.value ? parseFloat(event.target.value) : null;
+});
+
+// Transaction type filter
+document.getElementById("type-filter").addEventListener("change", function (event) {
+    trans_type = event.target.value;
+});
+
+
+// Filter button listener
+document.getElementById("filter-btn").addEventListener("click", function (event) {
+    loadTransactions()
+});
+
+
+// Function to filter items
+function filterItems(transactions) {
+
+    // Log filter values for debugging
+    console.log("Keyword:", keyword);
+    console.log("Date:", date);
+    console.log("Min Amount:", min_amount);
+    console.log("Max Amount:", max_amount);
+    console.log("Transaction Type:", trans_type);
+
+    // Check if both min_amount and max_amount are set, and validate their relationship
+    if (min_amount && max_amount) {
+        if (min_amount > max_amount) {
+            document.getElementById("filter-error").textContent = "Min Amount should be less than Max Amount.";
+            return;
+        } else {
+            document.getElementById("filter-error").textContent = ""; // Clear any previous error message
+        }
+    } else {
+        // Clear error if only one of them is set or both are null
+        document.getElementById("filter-error").textContent = "";
+    }
+
+    // Filter transactions based on active filters
+    const filteredTransactions = transactions.filter(transaction => {
+        
+        // Apply keyword filter (if keyword is set)
+        if (keyword && !(transaction.notes).toLowerCase().includes(keyword)) {
+            return false;
+        }
+
+        // Apply date filter (if date is set)
+        if (date && transaction.date !== date) {
+            return false;
+        }
+
+        // Apply min amount filter (if min_amount is set)
+        if (min_amount && transaction.amount < min_amount) {
+            return false;
+        }
+
+        // Apply max amount filter (if max_amount is set)
+        if (max_amount && transaction.amount > max_amount) {
+            return false;
+        }
+
+        // Apply transaction type filter (if trans_type is set and not "All")
+        if (trans_type && trans_type !== "all" && transaction.type !== trans_type) {
+            return false;
+        }
+
+        // If all filters pass, include this transaction
+        return true;
+    });
+
+    return filteredTransactions;
+}
 
 // Function to get the total budget
 function getTotalBudget(transactions) {
@@ -20,12 +122,11 @@ function getTotalBudget(transactions) {
     return total
 }
 
-
 // Function to load all transactions
 function loadTransactions() {
 
     // Fetching the transactions
-    const transactions = getTransactions()
+    const transactions = filterItems(getTransactions())
 
     // Initializing the content to empty
     let content = ``
@@ -38,8 +139,8 @@ function loadTransactions() {
         content += `
         <div class="transaction-item ${type}">
           <span>${date}</span>
-          <span>${notes}</span>
           <span>${type === "income" ? "+" : "-"}$${amount}</span>
+          <span>${notes}</span>
           <button onclick="deleteTransaction(${id})">Delete</button>
         </div>
         `
@@ -54,7 +155,6 @@ function loadTransactions() {
 
 }
 
-
 // Function to fetch transactions from local storage
 function getTransactions() {
 
@@ -65,7 +165,7 @@ function getTransactions() {
     return transactions;
 }
 
-// Function to save transactions to Local Storage
+// Function to save transactions to local storage
 function saveTransactions(transactions) {
     localStorage.setItem("transactions", JSON.stringify(transactions));
     loadTransactions()
@@ -78,6 +178,15 @@ function deleteTransaction(id) {
     saveTransactions(transactions);
 }
 
+function toggleErrorVisibility(state) {
+    const error_container = document.getElementById("amount-error");
+    if (state) {
+        error_container.classList.remove("hidden");
+    } else {
+        error_container.classList.add("hidden");
+    }
+}
+
 // Function to handle form submission
 form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -85,6 +194,15 @@ form.addEventListener("submit", function (e) {
     let transactions = getTransactions()
 
     const amount = parseFloat(document.getElementById("amount").value);
+
+    // Checking if the amount is valid
+    if (amount <= 0) {
+        toggleErrorVisibility(true)
+        return;
+    } else {
+        toggleErrorVisibility(false)
+    }
+
     const type = document.getElementById("type").value;
     const date = document.getElementById("date").value;
     const notes = document.getElementById("notes").value;
