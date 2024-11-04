@@ -13,34 +13,47 @@
     <h1>Expense Tracker</h1>
     <div class="container">
         <div class="container-left">
-            
-
             <!-- Form to add transaction -->
             <section id="transaction-form">
                 <h2>Add Transaction</h2>
                 <form id="form">
-                    <input type="number" id="amount" placeholder="Amount" required>
-                    <select id="type">
+                    <div class="control-wrapper">
+                        <input type="number" id="amount" class="form-field" placeholder="Amount" required>
+                        <p id="amount-error" class="hidden error">Amount should be a positive value</p>
+                    </div>
+                    <select id="type" class="form-field">
                         <option value="income">Income</option>
                         <option value="expense">Expense</option>
                     </select>
-                    <input type="date" id="date" required>
-                    <input type="text" id="notes" placeholder="Notes">
-                    <button type="submit">Add Transaction</button>
+                    <input type="date" id="date" class="form-field" required>
+                    <textarea id="notes" class="form-field" placeholder="Notes"></textarea>
+                    <button type="submit" id="submit-btn">Add Transaction</button>
                 </form>
             </section>
         </div>
         <div class="container-right">
             <!--Filter transactions-->
             <section>
-                <h3>Filter Transactions</h3>
-                <input type="number" id="min-filter" placeholder="Min Amount">
-                <input type="number" id="max-filter" placeholder="Max Amount">
-                <button id="filter-btn">Filter</button>
+                <h2>Filter Transactions</h2>
+                <div class="filter-wrapper">
+                    <input type="text" id="keyword-filter" class="filter-field" placeholder="Keyword">
+                    <input type="date" id="date-filter" class="filter-field" required>
+                    <input type="number" id="min-filter" class="filter-field" placeholder="Min Amount">
+                    <input type="number" id="max-filter" class="filter-field" placeholder="Max Amount">
+                    <select id="type-filter" class="filter-field">
+                        <option value="all">All</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <div class="filter-btn-wrapper">
+                    <button id="filter-btn">Filter</button>
+                    <p id="filter-error" class="error"></p>
+                </div>
             </section>
             <!-- Display Total Budget -->
             <section id="budget-display">
-                <h2>Total Budget: <span id="total-budget">$0</span></h2>
+                <h2>Total Budget: &nbsp;<span id="total-budget">$0</span></h2>
             </section>
             <!-- List of transactions -->
             <section id="transaction-list">
@@ -48,7 +61,7 @@
                 <div id="transactions"></div>
             </section>
 
-            
+
         </div>
     </div>
 </body>

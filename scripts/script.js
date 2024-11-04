@@ -49,13 +49,6 @@ document.getElementById("filter-btn").addEventListener("click", function (event)
 // Function to filter items
 function filterItems(transactions) {
 
-    // Log filter values for debugging
-    console.log("Keyword:", keyword);
-    console.log("Date:", date);
-    console.log("Min Amount:", min_amount);
-    console.log("Max Amount:", max_amount);
-    console.log("Transaction Type:", trans_type);
-
     // Check if both min_amount and max_amount are set, and validate their relationship
     if (min_amount && max_amount) {
         if (min_amount > max_amount) {
@@ -71,33 +64,26 @@ function filterItems(transactions) {
 
     // Filter transactions based on active filters
     const filteredTransactions = transactions.filter(transaction => {
-        
-        // Apply keyword filter (if keyword is set)
+
         if (keyword && !(transaction.notes).toLowerCase().includes(keyword)) {
             return false;
         }
 
-        // Apply date filter (if date is set)
         if (date && transaction.date !== date) {
             return false;
         }
-
-        // Apply min amount filter (if min_amount is set)
         if (min_amount && transaction.amount < min_amount) {
             return false;
         }
 
-        // Apply max amount filter (if max_amount is set)
         if (max_amount && transaction.amount > max_amount) {
             return false;
         }
 
-        // Apply transaction type filter (if trans_type is set and not "All")
         if (trans_type && trans_type !== "all" && transaction.type !== trans_type) {
             return false;
         }
 
-        // If all filters pass, include this transaction
         return true;
     });
 
@@ -131,20 +117,25 @@ function loadTransactions() {
     // Initializing the content to empty
     let content = ``
 
-    // Dynamically adding transaction items
-    transactions.map((transaction) => {
+    // Check if there are no transactions
+    if (transactions.length === 0) {
+        content = <p class="no-transactions">No transactions found</p>;
+    } else {
+        // Dynamically adding transaction items
+        transactions.map((transaction) => {
 
-        const { id, date, notes, type, amount } = transaction
+            const { id, date, notes, type, amount } = transaction
 
-        content += `
-        <div class="transaction-item ${type}">
-          <span>${date}</span>
-          <span>${type === "income" ? "+" : "-"}$${amount}</span>
-          <span>${notes}</span>
-          <button onclick="deleteTransaction(${id})">Delete</button>
-        </div>
-        `
-    })
+            content += `
+            <div class="transaction-item ${type}">
+              <span>${date}</span>
+              <span>${type === "income" ? "+" : "-"}$${amount}</span>
+              <span>${notes}</span>
+              <button onclick="deleteTransaction(${id})" class="delete-btn">Delete</button>
+            </div>
+            `
+        })
+    }
 
     // Fetching the budget
     const budget = getTotalBudget(transactions)
