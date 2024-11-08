@@ -1,7 +1,7 @@
 <?php
 
 include "connection.php";
-
+try{
 if (isset($_POST['user_id'])) {
     $user_id = $_POST['user_id'];
     
@@ -21,4 +21,9 @@ if (isset($_POST['user_id'])) {
 }
 
 $connection->close();
+
+}
+catch{
+    echo json_encode(["message"=>"Unexpected error"]);
+}
 ?>

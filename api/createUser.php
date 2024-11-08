@@ -2,6 +2,7 @@
 
 include "connection.php";
 
+try{
 //checking if fields are set
 if (!isset($_POST['username']) || empty($_POST['username']) ||
     !isset($_POST['password']) || empty($_POST['password']) ||
@@ -38,5 +39,8 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $connection->close();
-
+}
+catch{
+    echo json_encode(["message" => "Unexpected error"]);
+}
 ?>

@@ -2,6 +2,7 @@
 
 include "connection.php";
 
+try{
 if (!isset($_POST['transaction_id']) || !isset($_POST['amount']) || !isset($_POST['notes']) || !isset($_POST['date'])) {
     echo json_encode(["success" => false, "message" => "Missing required parameters"]);
     exit();
@@ -35,4 +36,9 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $connection->close();
+
+}
+catch{
+    echo json_encode(["message"=>"Unexpected error"]);
+}
 ?>

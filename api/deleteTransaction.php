@@ -2,6 +2,7 @@
 
 include "connection.php";
 
+try{
 // Ensure transaction_id is provided
 if (!isset($_POST['transaction_id'])) {
     echo json_encode(["success" => false, "message" => "Missing transaction_id"]);
@@ -34,5 +35,8 @@ if ($stmt->execute()) {
 // Close statement and connection
 $stmt->close();
 $connection->close();
-
+}
+catch{
+    echo json_encode(["message" => "Unexpected error"]);
+}
 ?>

@@ -2,6 +2,7 @@
 
 include "connection.php";
 
+try{
 if (!isset($_POST['user_id'])) {
     echo json_encode(["success" => false, "message" => "Missing user_id"]);
     exit();
@@ -37,4 +38,9 @@ echo json_encode(["success" => true, "data" => $result]);
 
 $stmt->close();
 $connection->close();
+
+}
+catch{
+    echo json_encode(["message"=>"Unexpected error"]);
+}
 ?>

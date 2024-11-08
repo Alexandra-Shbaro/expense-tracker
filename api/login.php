@@ -2,7 +2,7 @@
 include "connection.php";
 
 header("Access-Control-Allow-Origin");
-
+try{ 
 if (
     !isset($_POST['username']) || empty($_POST['username']) ||
     !isset($_POST['password']) || empty($_POST['password'])
@@ -52,4 +52,8 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 $connection->close();
+}
+catch{
+    echo json_encode(["message"=>"Unexpected error"]);
+}
 ?>

@@ -2,7 +2,7 @@
 
 include "connection.php"; 
 
-
+try{
 if (isset($_GET['user_id'])) {
     $user_id = $_GET['user_id'];
 
@@ -25,4 +25,9 @@ if (isset($_GET['user_id'])) {
 }
 
 $connection->close(); 
+
+}
+catch{
+    echo json_encode(["message"=>"Unexpected error"]);
+}
 ?>
