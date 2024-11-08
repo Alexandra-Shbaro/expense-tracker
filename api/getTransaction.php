@@ -2,7 +2,13 @@
 
 include "connection.php";
 
-$user_id = $_GET['user_id'];
+if (!isset($_POST['user_id'])) {
+    echo json_encode(["success" => false, "message" => "Missing user_id"]);
+    exit();
+}
+
+$user_id = $_POST['user_id'];
+
 
 $sql = "SELECT * FROM transactions WHERE user_id = ?";
 

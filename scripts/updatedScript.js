@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     function filterItems(transactions) {
         if (min_amount && max_amount && min_amount > max_amount) {
             document.getElementById("filter-error").textContent = "Min Amount should be less than Max Amount.";
-            return transactions; // Return unfiltered list if error
+            return transactions;
         } else {
             document.getElementById("filter-error").textContent = "";
         }
@@ -61,46 +61,100 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     function getTotalBudget(transactions) {
-        return transactions.reduce((total, { type, amount }) => type === "income" ? total + amount : total - amount, 0);
+        return transactions.reduce((total, { type, amount }) => type === "income" ? total + parseFloat(amount) : total - parseFloat(amount), 0);
     }
 
-    function loadTransactions() {
-        const transactions = filterItems(getTransactions());
-        console.log("Loaded Transactions:", transactions);
 
-        let content = "";
-        if (transactions.length === 0) {
-            content = '<p class="no-transactions">No transactions found</p>';
-        } else {
-            transactions.forEach(transaction => {
-                const { transaction_id, date, notes, type, amount } = transaction;
-                content += `
+    async function loadTransactions() {
+        try {
+            const body = { user_id: get_user_id() };
+            const encodedBody = encode(body);
+            const response = await fetch("/expense-tracker/api/getTransaction.php", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: encodedBody,
+            });
+
+            const res = await response.json();
+            if (!res.success) {
+                alert("Failed to fetch transaction.");
+                return;
+            }
+            const transactions = filterItems(res.data);
+            let content = "";
+            if (transactions.length === 0) {
+                content = '<p class="no-transactions">No transactions found</p>';
+            } else {
+                transactions.forEach(transaction => {
+                    const { transaction_id, date, notes, type, amount } = transaction;
+                    content += `
                 <div class="transaction-item ${type}">
                   <span>${date}</span>
                   <span>${type === "income" ? "+" : "-"}$${amount}</span>
                   <span>${notes}</span>
                   <button onclick="deleteTransaction(${transaction_id})" class="delete-btn">Delete</button>
                 </div>`;
-            });
+                });
+
+            }
+
+            transactionsContainer.innerHTML = content;
+            totalBudget.textContent = `$${getTotalBudget(transactions)}`;
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
         }
 
-        transactionsContainer.innerHTML = content;
-        totalBudget.textContent = `$${getTotalBudget(transactions)}`;
     }
 
-    function getTransactions() {
-        const default_transactions = localStorage.getItem("transactions") || "[]";
-        return JSON.parse(default_transactions);
-    }
-
-    function saveTransactions(transactions) {
-        localStorage.setItem("transactions", JSON.stringify(transactions));
-        loadTransactions();
-    }
 
     function deleteTransaction(id) {
-        let transactions = getTransactions().filter(transaction => transaction.transaction_id !== id);
-        saveTransactions(transactions);
+        try {
+            const body = { user_id: get_user_id() };
+            const encodedBody = encode(body);
+            const response = await fetch("/expense-tracker/api/getTransaction.php", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: encodedBody,
+            });
+
+            const res = await response.json();
+            if (!res.success) {
+                alert("Failed to fetch transaction.");
+                return;
+            }
+            const transactions = filterItems(res.data);
+            let content = "";
+            if (transactions.length === 0) {
+                content = '<p class="no-transactions">No transactions found</p>';
+            } else {
+                transactions.forEach(transaction => {
+                    const { transaction_id, date, notes, type, amount } = transaction;
+                    content += `
+                <div class="transaction-item ${type}">
+                  <span>${date}</span>
+                  <span>${type === "income" ? "+" : "-"}$${amount}</span>
+                  <span>${notes}</span>
+                  <button onclick="deleteTransaction(${transaction_id})" class="delete-btn">Delete</button>
+                </div>`;
+                });
+
+            }
+
+            transactionsContainer.innerHTML = content;
+            totalBudget.textContent = `$${getTotalBudget(transactions)}`;
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
+        }
+
+    }
+
+    function encode(obj) {
+        const encodedObject = Object.entries(obj)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&')
+        return encodedObject;
     }
 
     function toggleErrorVisibility(state) {
@@ -128,7 +182,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const notes = document.getElementById("notes").value;
 
         const transaction = {
-            transaction_id: Date.now(), // Create a unique ID
             user_id: get_user_id(),
             amount,
             type,
@@ -136,9 +189,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             notes
         };
 
-        const encodedTransaction = Object.entries(transaction)
-            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-            .join('&');
+        const encodedTransaction = encode(transaction);
 
         try {
             const response = await fetch("/expense-tracker/api/createTransaction.php", {
@@ -148,16 +199,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
             });
 
             const res = await response.json();
-            if (res.success) {
-                alert("Transaction added successfully!");
-                
-                // Update local storage manually
-                const transactions = getTransactions();
-                transactions.push(transaction);
-                saveTransactions(transactions);
-            } else {
+            if (!res.success) {
                 alert("Failed to add transaction.");
+                return;
             }
+            loadTransactions();
         } catch (error) {
             console.error(error);
             alert("An error occurred. Please try again.");
@@ -165,6 +211,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         form.reset();
     });
+
+
+
 
     function get_user_id() {
         return localStorage.getItem("user_id");

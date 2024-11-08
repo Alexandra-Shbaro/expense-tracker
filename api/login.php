@@ -1,6 +1,8 @@
 <?php
 include "connection.php";
 
+header("Access-Control-Allow-Origin");
+
 if (
     !isset($_POST['username']) || empty($_POST['username']) ||
     !isset($_POST['password']) || empty($_POST['password'])
