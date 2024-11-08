@@ -4,24 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker Login</title>
+    <title>Expense Tracker Signup</title>
     <link rel="stylesheet" href="./styles/style.css">
-    <script src="./scripts/login.js" defer></script>
+    <script src="./scripts/signup.js" defer></script>
 </head>
 
 <body>
-    <div class="login">
-        <h1>Login</h1>
-        <form id="login_form">
+    <div class="signup">
+        <h1>Signup</h1>
+        <form id="signup_form">
             <div class="input-box">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
             </div>
             <div class="input-box">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-box">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">Signup</button>
         </form>
     </div>
 </body>

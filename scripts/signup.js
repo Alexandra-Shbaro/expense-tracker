@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("login_form"); 
+    const form = document.getElementById("signup_form");
 
     form.addEventListener("submit", async (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
 
         const formData = new FormData(form);
 
         try {
-            const response = await fetch("/expense-tracker/api/login.php", {
+            const response = await fetch("/expense-tracker/api/createUser.php", {
                 method: "POST",
                 body: formData,
             });
@@ -15,13 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await response.json();
 
             if (res.success) {
-                localStorage.setItem("user_id", res.user_id);
+                alert("Signup successful!");
                 window.location.href = "index.html";
             } else {
-                alert(`Login failed: ${res.message}`);
+                alert(`Signup failed: ${res.message}`);
             }
         } catch (error) {
-            console.error("Error during login:", error);
+            console.error("Error during signup:", error);
             alert("An error occurred. Please try again.");
         }
     });
