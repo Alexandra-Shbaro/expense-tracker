@@ -29,7 +29,7 @@ if (!$stmt->execute()) {
 $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 if (empty($result)) {
-    echo json_encode(["success" => false, "message" => "No transactions found for this user"]);
+    echo json_encode(["success" => true, "data"=>[]]);
     exit();
 }
 

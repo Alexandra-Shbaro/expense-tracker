@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Check if user is in local storage
+    let local_user = localStorage.getItem("user_id");
+    if (local_user) {
+        window.location.href = "/expense-tracker/index.html";
+    }
     const form = document.getElementById("signup_form");
 
     form.addEventListener("submit", async (event) => {

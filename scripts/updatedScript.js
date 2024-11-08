@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", (event) => {
+
     // Check if user is in local storage
     let local_user = localStorage.getItem("user_id");
     if (!local_user) {
@@ -108,47 +108,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
 
-    function deleteTransaction(id) {
-        try {
-            const body = { user_id: get_user_id() };
-            const encodedBody = encode(body);
-            const response = await fetch("/expense-tracker/api/getTransaction.php", {
-                method: "POST",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: encodedBody,
-            });
-
-            const res = await response.json();
-            if (!res.success) {
-                alert("Failed to fetch transaction.");
-                return;
-            }
-            const transactions = filterItems(res.data);
-            let content = "";
-            if (transactions.length === 0) {
-                content = '<p class="no-transactions">No transactions found</p>';
-            } else {
-                transactions.forEach(transaction => {
-                    const { transaction_id, date, notes, type, amount } = transaction;
-                    content += `
-                <div class="transaction-item ${type}">
-                  <span>${date}</span>
-                  <span>${type === "income" ? "+" : "-"}$${amount}</span>
-                  <span>${notes}</span>
-                  <button onclick="deleteTransaction(${transaction_id})" class="delete-btn">Delete</button>
-                </div>`;
-                });
-
-            }
-
-            transactionsContainer.innerHTML = content;
-            totalBudget.textContent = `$${getTotalBudget(transactions)}`;
-        } catch (error) {
-            console.error(error);
-            alert("An error occurred. Please try again.");
-        }
-
-    }
 
     function encode(obj) {
         const encodedObject = Object.entries(obj)
@@ -224,5 +183,30 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     };
 
-    loadTransactions(); // Initial load when page is ready
-});
+   
+
+
+async function deleteTransaction(id) {
+    try {
+        const body = { transaction_id: id };
+        const encodedBody = encode(body);
+        const response = await fetch("/expense-tracker/api/deleteTransaction.php", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: encodedBody,
+        });
+
+        const res = await response.json();
+        if (!res.success) {
+            alert("Failed to delete transaction.");
+            return;
+        }
+        loadTransactions();
+    } catch (error) {
+        console.error(error);
+        alert("An error occurred. Please try again.");
+    }
+
+};
+
+loadTransactions(); // Initial load when page is ready
