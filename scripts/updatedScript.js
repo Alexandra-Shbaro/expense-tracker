@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 });
     
-
     // Fetching containers
     const form = document.getElementById("form");
     const transactionsContainer = document.getElementById("transactions");
