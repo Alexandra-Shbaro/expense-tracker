@@ -1,9 +1,14 @@
-
+document.addEventListener("DOMContentLoaded", (event) => {
     // Check if user is in local storage
     let local_user = localStorage.getItem("user_id");
     if (!local_user) {
         window.location.href = "/expense-tracker/login.html";
+    }else{
+        loadTransactions();
     }
+
+});
+    
 
     // Fetching containers
     const form = document.getElementById("form");
@@ -209,4 +214,3 @@ async function deleteTransaction(id) {
 
 };
 
-loadTransactions(); // Initial load when page is ready
