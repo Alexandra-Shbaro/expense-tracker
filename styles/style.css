@@ -175,3 +175,32 @@ button {
     color: red;
     font-size: 14px;
 }
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#loginButton, #signupButton {
+    padding: 15px 40px;
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #00796b;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#loginButton, #signupButton:hover {
+    background-color: #004d40;
+    transform: translateY(-2px);
+}
+
+#loginButton, #signupButton:active {
+    transform: translateY(1px);
+}

@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    //Check if user is in local storage
-    let local_user= localStorage.getItem("user_id");
-    console.log(local_user);
-    if (!local_user){
-        window.location.href="/expense-tracker/login.html";
+    // Check if user is in local storage
+    let local_user = localStorage.getItem("user_id");
+    if (!local_user) {
+        window.location.href = "/expense-tracker/login.html";
     }
 
     // Fetching containers
@@ -11,169 +10,96 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const transactionsContainer = document.getElementById("transactions");
     const totalBudget = document.getElementById("total-budget");
 
-
     // Defining Filters
-    var keyword = ""
-    var date = null
-    var min_amount = null
-    var max_amount = null
-    var trans_type = "all"
-
+    var keyword = "";
+    var date = null;
+    var min_amount = null;
+    var max_amount = null;
+    var trans_type = "all";
 
     // Defining listeners for filters
-
-    // Keyword filter
     document.getElementById("keyword-filter").addEventListener("input", function (event) {
         keyword = event.target.value;
     });
 
-    // Date filter
     document.getElementById("date-filter").addEventListener("change", function (event) {
         date = event.target.value;
     });
 
-    // Min amount filter
     document.getElementById("min-filter").addEventListener("input", function (event) {
         min_amount = event.target.value ? parseFloat(event.target.value) : null;
     });
 
-    // Max amount filter
     document.getElementById("max-filter").addEventListener("input", function (event) {
         max_amount = event.target.value ? parseFloat(event.target.value) : null;
     });
 
-    // Transaction type filter
     document.getElementById("type-filter").addEventListener("change", function (event) {
         trans_type = event.target.value;
     });
 
-
-    // Filter button listener
     document.getElementById("filter-btn").addEventListener("click", function (event) {
-        loadTransactions()
+        loadTransactions();
     });
 
-
-    // Function to filter items
     function filterItems(transactions) {
-
-        // Check if both min_amount and max_amount are set, and validate their relationship
-        if (min_amount && max_amount) {
-            if (min_amount > max_amount) {
-                document.getElementById("filter-error").textContent = "Min Amount should be less than Max Amount.";
-                return;
-            } else {
-                document.getElementById("filter-error").textContent = ""; // Clear any previous error message
-            }
+        if (min_amount && max_amount && min_amount > max_amount) {
+            document.getElementById("filter-error").textContent = "Min Amount should be less than Max Amount.";
+            return transactions; // Return unfiltered list if error
         } else {
-            // Clear error if only one of them is set or both are null
             document.getElementById("filter-error").textContent = "";
         }
 
-        // Filter transactions based on active filters
-        const filteredTransactions = transactions.filter(transaction => {
-
-            if (keyword && !(transaction.notes).toLowerCase().includes(keyword)) {
-                return false;
-            }
-
-            if (date && transaction.date !== date) {
-                return false;
-            }
-            if (min_amount && transaction.amount < min_amount) {
-                return false;
-            }
-
-            if (max_amount && transaction.amount > max_amount) {
-                return false;
-            }
-
-            if (trans_type && trans_type !== "all" && transaction.type !== trans_type) {
-                return false;
-            }
-
+        return transactions.filter(transaction => {
+            if (keyword && !(transaction.notes).toLowerCase().includes(keyword)) return false;
+            if (date && transaction.date !== date) return false;
+            if (min_amount && transaction.amount < min_amount) return false;
+            if (max_amount && transaction.amount > max_amount) return false;
+            if (trans_type && trans_type !== "all" && transaction.type !== trans_type) return false;
             return true;
         });
-
-        return filteredTransactions;
     }
 
-    // Function to get the total budget
     function getTotalBudget(transactions) {
-
-        let total = 0;
-
-        // Looping over the transactions to calculate the total budget
-        transactions.map((transaction) => {
-            const { type, amount } = transaction
-            if (type === "income") {
-                total += amount
-            } else {
-                total -= amount
-            }
-        })
-
-        return total
+        return transactions.reduce((total, { type, amount }) => type === "income" ? total + amount : total - amount, 0);
     }
 
-    // Function to load all transactions
     function loadTransactions() {
+        const transactions = filterItems(getTransactions());
+        console.log("Loaded Transactions:", transactions);
 
-        // Fetching the transactions
-        const transactions = filterItems(getTransactions())
-
-        // Initializing the content to empty
-        let content = ``
-
-        // Check if there are no transactions
+        let content = "";
         if (transactions.length === 0) {
             content = '<p class="no-transactions">No transactions found</p>';
         } else {
-            // Dynamically adding transaction items
-            transactions.map((transaction) => {
-
-                const { id, date, notes, type, amount } = transaction
-
+            transactions.forEach(transaction => {
+                const { transaction_id, date, notes, type, amount } = transaction;
                 content += `
-            <div class="transaction-item ${type}">
-              <span>${date}</span>
-              <span>${type === "income" ? "+" : "-"}$${amount}</span>
-              <span>${notes}</span>
-              <button onclick="deleteTransaction(${id})" class="delete-btn">Delete</button>
-            </div>
-            `
-            })
+                <div class="transaction-item ${type}">
+                  <span>${date}</span>
+                  <span>${type === "income" ? "+" : "-"}$${amount}</span>
+                  <span>${notes}</span>
+                  <button onclick="deleteTransaction(${transaction_id})" class="delete-btn">Delete</button>
+                </div>`;
+            });
         }
 
-        // Fetching the budget
-        const budget = getTotalBudget(transactions)
-
-        // Setting the items + the budget
         transactionsContainer.innerHTML = content;
-        totalBudget.textContent = `$${budget}`;
-
+        totalBudget.textContent = `$${getTotalBudget(transactions)}`;
     }
 
-    // Function to fetch transactions from local storage
     function getTransactions() {
-
-        // If no transactions are found (first visit to the page) , initialize with empty array
-        const default_transactions = localStorage.getItem("transactions") || "[]"
-
-        const transactions = JSON.parse(default_transactions);
-        return transactions;
+        const default_transactions = localStorage.getItem("transactions") || "[]";
+        return JSON.parse(default_transactions);
     }
 
-    // Function to save transactions to local storage
     function saveTransactions(transactions) {
         localStorage.setItem("transactions", JSON.stringify(transactions));
-        loadTransactions()
+        loadTransactions();
     }
 
-    // Function to delete a transaction
     function deleteTransaction(id) {
-        let transactions = getTransactions()
-        transactions = transactions.filter(transaction => transaction.id !== id);
+        let transactions = getTransactions().filter(transaction => transaction.transaction_id !== id);
         saveTransactions(transactions);
     }
 
@@ -186,20 +112,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     }
 
-    // Function to handle form submission
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        let transactions = getTransactions()
-
         const amount = parseFloat(document.getElementById("amount").value);
-
-        // Checking if the amount is valid
         if (amount <= 0) {
-            toggleErrorVisibility(true)
+            toggleErrorVisibility(true);
             return;
         } else {
-            toggleErrorVisibility(false)
+            toggleErrorVisibility(false);
         }
 
         const type = document.getElementById("type").value;
@@ -207,18 +128,52 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const notes = document.getElementById("notes").value;
 
         const transaction = {
-            id: Date.now(),
+            transaction_id: Date.now(), // Create a unique ID
+            user_id: get_user_id(),
             amount,
             type,
-            date,
+            date: formatDate(date),
             notes
         };
 
-        transactions.push(transaction);
-        saveTransactions(transactions);
+        const encodedTransaction = Object.entries(transaction)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
+
+        try {
+            const response = await fetch("/expense-tracker/api/createTransaction.php", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: encodedTransaction,
+            });
+
+            const res = await response.json();
+            if (res.success) {
+                alert("Transaction added successfully!");
+                
+                // Update local storage manually
+                const transactions = getTransactions();
+                transactions.push(transaction);
+                saveTransactions(transactions);
+            } else {
+                alert("Failed to add transaction.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred. Please try again.");
+        }
+
         form.reset();
     });
 
-    loadTransactions()
-});
+    function get_user_id() {
+        return localStorage.getItem("user_id");
+    }
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
+    loadTransactions(); // Initial load when page is ready
+});
