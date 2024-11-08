@@ -34,7 +34,8 @@ if ($stmt->execute()) {
 $stmt->close();
 $connection->close();
 }
-catch{
+catch (Exception $e) {
     echo json_encode(["message" => "Unexpected error"]);
 }
+
 ?>

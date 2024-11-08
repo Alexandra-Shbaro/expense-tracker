@@ -21,7 +21,7 @@ body {
     padding: 20px;
     background-color: #f5f5f5;
     border-radius: 5px;
-    height:fit-content !important;
+    height: fit-content !important;
 }
 
 /* Style for the right container */
@@ -177,31 +177,86 @@ button {
     font-size: 14px;
 }
 
-.button-container {
+.login-container{
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    gap:20px;
 }
 
-#loginButton, #signupButton {
-    padding: 15px 40px;
-    font-size: 1.25em;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #00796b;
-    border: none;
+.login {
+    background: #ffffff;
+    padding: 30px;
     border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.login h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-box {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-box label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    text-align: center;
 }
 
-#loginButton, #signupButton:hover {
-    background-color: #004d40;
-    transform: translateY(-2px);
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
 }
 
-#loginButton, #signupButton:active {
-    transform: translateY(1px);
+.signup-link {
+    margin-top: 15px;
+    text-align: center;
+    width:20%;
+    
+}
+
+.signup-link a {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.signup-link a:hover {
+    background-color: #0056b3;
 }

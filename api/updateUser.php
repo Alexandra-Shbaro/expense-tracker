@@ -25,7 +25,8 @@ if (isset($_POST['user_id']) && isset($_POST['username']) && isset($_POST['email
 
 $connection->close();
 }
-catch{
-    echo json_encode(["message"=>"Unexpected error"]);
+catch (Exception $e) {
+    echo json_encode(["message" => "Unexpected error"]);
 }
+
 ?>
