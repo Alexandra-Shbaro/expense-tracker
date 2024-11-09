@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch("/expense-tracker/backend/api/login.php", {
+            const response = await fetch("/expense-tracker/backend/login.php", {
                 method: "POST",
                 body: formData,
             });
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (res.success) {
                 localStorage.setItem("user_id", res.user_id);
-                window.location.replace("./frontend/index.html");
+                window.location.replace("/expense-tracker/frontend/index.html");
             } else {
                 alert(`Login failed: ${res.message}`);
             }

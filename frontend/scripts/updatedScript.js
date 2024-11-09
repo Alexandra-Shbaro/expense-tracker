@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         try {
             const body = { user_id: get_user_id() };
             const encodedBody = encode(body);
-            const response = await fetch("/expense-tracker/backend/api/getTransaction.php", {
+            const response = await fetch("/expense-tracker/backend/getTransaction.php", {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: encodedBody,
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const encodedTransaction = encode(transaction);
 
         try {
-            const response = await fetch("/expense-tracker/api/createTransaction.php", {
+            const response = await fetch("/expense-tracker/backend/createTransaction.php", {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: encodedTransaction,
@@ -194,7 +194,7 @@ async function deleteTransaction(id) {
     try {
         const body = { transaction_id: id };
         const encodedBody = encode(body);
-        const response = await fetch("/expense-tracker/backend/api/deleteTransaction.php", {
+        const response = await fetch("/expense-tracker/backend/deleteTransaction.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: encodedBody,

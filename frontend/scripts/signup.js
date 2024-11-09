@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch("/expense-tracker/backend/api/createUser.php", {
+            const response = await fetch("/expense-tracker/backend/createUser.php", {
                 method: "POST",
                 body: formData,
             });
