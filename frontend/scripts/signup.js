@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if user is in local storage
     let local_user = localStorage.getItem("user_id");
     if (local_user) {
-        window.location.href = "/expense-tracker/index.html";
+        window.location.href = "/expense-tracker/frontend/index.html";
     }
     const form = document.getElementById("signup_form");
 
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch("/expense-tracker/api/createUser.php", {
+            const response = await fetch("/expense-tracker/backend/api/createUser.php", {
                 method: "POST",
                 body: formData,
             });

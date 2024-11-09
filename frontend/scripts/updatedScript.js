@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // Check if user is in local storage
     let local_user = localStorage.getItem("user_id");
     if (!local_user) {
-        window.location.href = "/expense-tracker/login.html";
+        window.location.href = "/expense-tracker/frontend/login.html";
     }else{
         loadTransactions();
     }
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         try {
             const body = { user_id: get_user_id() };
             const encodedBody = encode(body);
-            const response = await fetch("/expense-tracker/api/getTransaction.php", {
+            const response = await fetch("/expense-tracker/backend/api/getTransaction.php", {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: encodedBody,
@@ -194,7 +194,7 @@ async function deleteTransaction(id) {
     try {
         const body = { transaction_id: id };
         const encodedBody = encode(body);
-        const response = await fetch("/expense-tracker/api/deleteTransaction.php", {
+        const response = await fetch("/expense-tracker/backend/api/deleteTransaction.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: encodedBody,
